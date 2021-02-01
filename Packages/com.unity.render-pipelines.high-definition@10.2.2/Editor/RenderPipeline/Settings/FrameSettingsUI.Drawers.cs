@@ -274,6 +274,10 @@ namespace UnityEditor.Rendering.HighDefinition
             area.AmmendInfo(FrameSettingsField.VirtualTexturing, overrideable: () => false, overridedDefaultValue: false);
 #endif
 
+            bool transparentIsOff = serialized.GetOverrides(FrameSettingsField.TransparentObjects) ? 
+                !(serialized.IsEnabled(FrameSettingsField.TransparentObjects) ?? false) : !defaultFrameSettings.IsEnabled(FrameSettingsField.TransparentObjects);
+            area.AmmendInfo(FrameSettingsField.TransparentReadDepthNormal, overridedDefaultValue: defaultFrameSettings.IsEnabled(FrameSettingsField.TransparentReadDepthNormal) && !transparentIsOff);
+
             area.AmmendInfo(FrameSettingsField.MotionVectors, overrideable: () => hdrpSettings.supportMotionVectors,
                 overridedDefaultValue: hdrpSettings.supportMotionVectors && defaultFrameSettings.IsEnabled(FrameSettingsField.MotionVectors));
             bool motionVectorIsOff = serialized.GetOverrides(FrameSettingsField.MotionVectors) ? 

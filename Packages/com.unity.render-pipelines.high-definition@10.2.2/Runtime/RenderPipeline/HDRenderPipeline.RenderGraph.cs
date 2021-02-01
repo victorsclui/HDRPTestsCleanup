@@ -616,7 +616,12 @@ namespace UnityEngine.Rendering.HighDefinition
                 passData.renderMotionVecForTransparent = NeedMotionVectorForTransparent(hdCamera.frameSettings);
                 passData.volumetricLighting = builder.ReadTexture(volumetricLighting);
                 passData.transparentSSRLighting = builder.ReadTexture(ssrLighting);
-                passData.depthPyramidTexture = builder.ReadTexture(prepassOutput.depthPyramidTexture); // We need to bind this for transparent materials doing stuff like soft particles etc.
+
+                if (hdCamera.frameSettings.IsEnabled(FrameSettingsField.TransparentReadDepthNormal))
+                {
+                    passData.depthPyramidTexture = builder.ReadTexture(prepassOutput.depthPyramidTexture);
+                    passData.normalBuffer = builder.ReadTexture(normalBuffer);
+                }
 
                 int index = 0;
                 passData.renderTarget[index++] = builder.WriteTexture(colorBuffer);
@@ -645,12 +650,6 @@ namespace UnityEngine.Rendering.HighDefinition
                     builder.ReadTexture(colorPyramid.Value);
                 }
 
-                // TODO RENDERGRAPH
-                // Since in the old code path we bound this as global, it was available here so we need to bind it as well in order not to break existing projects...
-                // This is not good because it will extend its lifetime even when it's not actually used by a shader (we can't have that info).
-                // TODO: Make this explicit?
-                passData.normalBuffer = builder.ReadTexture(normalBuffer);
-
                 builder.SetRenderFunc(
                     (ForwardTransparentPassData data, RenderGraphContext context) =>
                 {
@@ -666,10 +665,13 @@ namespace UnityEngine.Rendering.HighDefinition
 
                     BindGlobalLightListBuffers(data, context);
 
-                        context.cmd.SetGlobalTexture(HDShaderIDs._SsrLightingTexture, data.transparentSSRLighting);
-                        context.cmd.SetGlobalTexture(HDShaderIDs._VBufferLighting, data.volumetricLighting);
+                    context.cmd.SetGlobalTexture(HDShaderIDs._SsrLightingTexture, data.transparentSSRLighting);
+                    context.cmd.SetGlobalTexture(HDShaderIDs._VBufferLighting, data.volumetricLighting);
+                    if (data.depthPyramidTexture.IsValid())
+                    {
                         context.cmd.SetGlobalTexture(HDShaderIDs._CameraDepthTexture, data.depthPyramidTexture);
                         context.cmd.SetGlobalTexture(HDShaderIDs._NormalBufferTexture, data.normalBuffer);
+                    }
 
                     RenderForwardRendererList(  data.frameSettings, data.rendererList, mrt, data.depthBuffer, data.lightListBuffer, false, context.renderContext, context.cmd);
                 });

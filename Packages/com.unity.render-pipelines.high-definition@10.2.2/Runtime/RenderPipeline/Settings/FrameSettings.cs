@@ -111,6 +111,9 @@ namespace UnityEngine.Rendering.HighDefinition
         /// <summary>When enabled, Cameras using these Frame Settings render Transparent GameObjects.</summary>
         [FrameSettingsField(0, autoName: TransparentObjects, customOrderInGroup: 5, tooltip: "When enabled, Cameras using these Frame Settings render Transparent GameObjects.")]
         TransparentObjects = 3,
+        /// <summary>When enabled, depth and normal buffer is prepared for the transparent pass.</summary>
+        [FrameSettingsField(0, autoName: TransparentReadDepthNormal, positiveDependencies: new[] { TransparentObjects }, customOrderInGroup: 5, tooltip: "When enabled, depth and normal buffer is prepared for the transparent pass.")]
+        TransparentReadDepthNormal = 4,
         /// <summary>When enabled, HDRP processes a decal render pass for Cameras using these Frame Settings.</summary>
         [FrameSettingsField(0, autoName: Decals, customOrderInGroup: 6, tooltip: "When enabled, HDRP processes a decal render pass for Cameras using these Frame Settings.")]
         Decals = 12,
@@ -423,6 +426,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 (uint)FrameSettingsField.ZTestAfterPostProcessTAA,
                 (uint)FrameSettingsField.OpaqueObjects,
                 (uint)FrameSettingsField.TransparentObjects,
+                (uint)FrameSettingsField.TransparentReadDepthNormal,
                 (uint)FrameSettingsField.AsyncCompute,
                 (uint)FrameSettingsField.LightListAsync,
                 (uint)FrameSettingsField.SSRAsync,
@@ -484,6 +488,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 //(uint)FrameSettingsField.AfterPostprocess,
                 (uint)FrameSettingsField.OpaqueObjects,
                 (uint)FrameSettingsField.TransparentObjects,
+                (uint)FrameSettingsField.TransparentReadDepthNormal,
                 (uint)FrameSettingsField.AsyncCompute,
                 (uint)FrameSettingsField.LightListAsync,
                 (uint)FrameSettingsField.SSRAsync,
@@ -541,6 +546,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 //(uint)FrameSettingsField.AfterPostprocess,
                 (uint)FrameSettingsField.OpaqueObjects,
                 (uint)FrameSettingsField.TransparentObjects,
+                (uint)FrameSettingsField.TransparentReadDepthNormal,
                 (uint)FrameSettingsField.AsyncCompute,
                 (uint)FrameSettingsField.LightListAsync,
                 //(uint)FrameSettingsField.SSRAsync,
