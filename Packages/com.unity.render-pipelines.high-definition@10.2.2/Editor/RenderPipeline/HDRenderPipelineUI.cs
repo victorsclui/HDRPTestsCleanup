@@ -289,6 +289,12 @@ namespace UnityEditor.Rendering.HighDefinition
                 }
             }
 
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.DelayedIntField(serialized.renderPipelineSettings.lightLoopSettings.maxEnvLightsOnScreen, Styles.maxEnvContent);
+            if (EditorGUI.EndChangeCheck())
+                serialized.renderPipelineSettings.lightLoopSettings.maxEnvLightsOnScreen.intValue = Mathf.Clamp(serialized.renderPipelineSettings.lightLoopSettings.maxEnvLightsOnScreen.intValue, 1, HDRenderPipeline.k_MaxEnvLightsOnScreen);
+
+            EditorGUILayout.Space();
             EditorGUILayout.Space();
 
             // Planar reflection probes section
@@ -311,15 +317,9 @@ namespace UnityEditor.Rendering.HighDefinition
                     string message = string.Format(Styles.cacheInfoFormat, HDEditorUtils.HumanizeWeight(currentCache));
                     EditorGUILayout.HelpBox(message, MessageType.Info);
                 }
-                EditorGUILayout.PropertyField(serialized.renderPipelineSettings.lightLoopSettings.maxPlanarReflectionOnScreen, Styles.maxPlanarReflectionOnScreen);
-            }
-            
-            EditorGUILayout.Space();
 
-            EditorGUI.BeginChangeCheck();
-            EditorGUILayout.DelayedIntField(serialized.renderPipelineSettings.lightLoopSettings.maxEnvLightsOnScreen, Styles.maxEnvContent);
-            if (EditorGUI.EndChangeCheck())
-               serialized.renderPipelineSettings.lightLoopSettings.maxEnvLightsOnScreen.intValue = Mathf.Clamp(serialized.renderPipelineSettings.lightLoopSettings.maxEnvLightsOnScreen.intValue, 1, HDRenderPipeline.k_MaxEnvLightsOnScreen);
+                EditorGUILayout.PropertyField(serialized.renderPipelineSettings.lightLoopSettings.maxPlanarReflectionOnScreen, Styles.maxPlanarReflectionOnScreen);
+            }           
         }
 
         static void Drawer_SectionSky(SerializedHDRenderPipelineAsset serialized, Editor owner)
