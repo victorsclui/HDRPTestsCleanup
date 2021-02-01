@@ -370,11 +370,14 @@ namespace UnityEngine.Rendering.HighDefinition
 #if UNITY_EDITOR
                 passData.copyDepth = passData.copyDepth || hdCamera.isMainGameView; // Specific case of Debug.DrawLine and Debug.Ray
 #endif
-                passData.copyDepthMaterial = m_CopyDepth;
                 passData.finalTarget = builder.WriteTexture(finalTarget);
                 passData.finalViewport = hdCamera.finalViewport;
-                passData.depthBuffer = builder.ReadTexture(depthBuffer);
-                passData.flipY = hdCamera.isMainGameView;
+                if (passData.copyDepth)
+                {
+                    passData.copyDepthMaterial = m_CopyDepth;
+                    passData.depthBuffer = builder.ReadTexture(depthBuffer);
+                    passData.flipY = hdCamera.isMainGameView;
+                }
 
                 builder.SetRenderFunc(
                 (SetFinalTargetPassData data, RenderGraphContext ctx) =>
