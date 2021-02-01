@@ -353,6 +353,7 @@ namespace UnityEditor.Rendering.HighDefinition
             area.AmmendInfo(FrameSettingsField.SSR, overrideable: () => hdrpSettings.supportSSR);
             area.AmmendInfo(FrameSettingsField.TransparentSSR, overrideable: () => (hdrpSettings.supportSSR && hdrpSettings.supportSSRTransparent));
             area.AmmendInfo(FrameSettingsField.SSAO, overrideable: () => hdrpSettings.supportSSAO);
+            area.AmmendInfo(FrameSettingsField.SSGI, overrideable: () => hdrpSettings.supportSSGI);
 
             // SSS
             area.AmmendInfo(
