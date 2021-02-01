@@ -135,7 +135,18 @@ namespace UnityEditor.Rendering.HighDefinition
 
         static FrameSettings GetDefaultFrameSettingsFor(Editor owner)
         {
-            HDRenderPipelineAsset hdrpAsset = GetHDRPAssetFor(owner);
+            HDRenderPipelineAsset hdrpAsset;
+            if (owner is HDRenderPipelineEditor)
+            {
+                // When drawing the inspector of a selected HDRPAsset in Project windows, access HDRP by owner drawing itself
+                hdrpAsset = (owner as HDRenderPipelineEditor).target as HDRenderPipelineAsset;
+            }
+            else
+            {
+                // There is only 1 default frame setting across all quality settings
+                hdrpAsset = HDRenderPipeline.defaultAsset;
+            }
+
             return owner is IDefaultFrameSettingsType getType
                 ? hdrpAsset.GetDefaultFrameSettings(getType.GetFrameSettingsType())
                 : hdrpAsset.GetDefaultFrameSettings(FrameSettingsRenderType.Camera);
