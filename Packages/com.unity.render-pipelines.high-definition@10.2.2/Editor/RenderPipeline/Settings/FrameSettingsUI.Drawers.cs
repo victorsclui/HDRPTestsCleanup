@@ -197,6 +197,25 @@ namespace UnityEditor.Rendering.HighDefinition
                     }
                 });
 
+            bool msaaOverridenAndOff = serialized.GetOverrides(FrameSettingsField.MSAA) && !(serialized.IsEnabled(FrameSettingsField.MSAA) ?? false);
+            area.AmmendInfo(FrameSettingsField.AlphaToMask,
+                overrideable: () => msaaEnablable && !msaaOverridenAndOff,
+                overridedDefaultValue: msaaEnablable && defaultFrameSettings.IsEnabled(FrameSettingsField.AlphaToMask) && !msaaOverridenAndOff,
+                customOverrideable: () =>
+                {
+                    switch (hdrpSettings.supportedLitShaderMode)
+                    {
+                        case RenderPipelineSettings.SupportedLitShaderMode.ForwardOnly:
+                            return false; //negative dependency
+                        case RenderPipelineSettings.SupportedLitShaderMode.DeferredOnly:
+                            return true; //negative dependency
+                        case RenderPipelineSettings.SupportedLitShaderMode.Both:
+                            return !(frameSettingsOverrideToForward || defaultForwardUsed); //negative dependency
+                        default:
+                            throw new System.ArgumentOutOfRangeException("Unknown ShaderLitMode");
+                    }
+                });
+
             bool defaultDeferredUsed = !serialized.GetOverrides(FrameSettingsField.LitShaderMode) && defaultShaderLitMode == LitShaderMode.Deferred;
             bool depthPrepassEnablable = (hdrpAssetSupportDeferred && (defaultDeferredUsed || frameSettingsOverrideToDeferred)) || (hdrpAssetIsDeferred);
             area.AmmendInfo(FrameSettingsField.DepthPrepassWithDeferredRendering,
